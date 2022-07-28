@@ -1,0 +1,87 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.2'
+    id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+    id 'java'
+    id 'org.springframework.experimental.aot' version '0.12.1'
+    id 'org.hibernate.orm'
+}
+
+group = 'com.tackedev'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+}
+
+repositories {
+    maven { url 'https://repo.spring.io/release' }
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.6.8'
+    implementation 'org.springdoc:springdoc-openapi-security:1.6.9'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+    implementation 'org.mapstruct:mapstruct:1.5.2.Final'
+    implementation 'com.lmax:disruptor:3.4.4'
+
+    compileOnly 'org.projectlombok:lombok'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.named('bootBuildImage') {
+    builder = 'paketobuildpacks/builder:tiny'
+    environment = ['BP_NATIVE_IMAGE': 'true']
+    jvmArgs += ['-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector']
+}
+
+hibernate {
+    enhance {
+        enableLazyInitialization = true
+        enableDirtyTracking = true
+        enableAssociationManagement = true
+        enableExtendedEnhancement = false
+    }
+}
+
+compileJava {
+    options.compilerArgs += [
+            '-Amapstruct.suppressGeneratorTimestamp=true',
+            '-Amapstruct.suppressGeneratorVersionInfoComment=true',
+            '-Amapstruct.verbose=true',
+            '-Amapstruct.defaultComponentModel=spring'
+    ]
+}
+
+bootRun {
+    jvmArgs += ['-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector']
+}
