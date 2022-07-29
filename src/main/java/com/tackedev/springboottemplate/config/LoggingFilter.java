@@ -31,7 +31,7 @@ public class LoggingFilter extends OncePerRequestFilter {
         filterChain.doFilter(requestWrapper, responseWrapper);
         long processTime = System.currentTimeMillis() - startTime;
 
-        log.debug("Request {} {} {} {} headers=[{}] parameters=[{}] body={}",
+        log.info("Request {} {} {} {} headers=[{}] parameters=[{}] body={}",
                 requestWrapper::getRemoteAddr,
                 requestWrapper::getProtocol,
                 requestWrapper::getMethod,
@@ -39,7 +39,7 @@ public class LoggingFilter extends OncePerRequestFilter {
                 () -> getHeaderAsString(requestWrapper),
                 () -> getParametersAsString(requestWrapper),
                 () -> getBodyAsString(requestWrapper.getContentAsByteArray(), requestWrapper.getCharacterEncoding()));
-        log.debug("Response processingTime={} status={} {} body={}",
+        log.info("Response processingTime={} status={} {} body={}",
                 () -> processTime,
                 responseWrapper::getStatus,
                 () -> HttpStatus.valueOf(responseWrapper.getStatus()).getReasonPhrase(),
