@@ -44,7 +44,7 @@
         <Logger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="error"/>
         <Logger name="org.hibernate.validator.internal.util.Version" level="warn"/>
         <Logger name="org.springframework.boot.actuate.endpoint.jmx" level="warn"/>
-        <Logger name="com.tackedev.springboottemplate.config.LoggingFilter" additivity="false">
+        <Logger name="com.tackedev.springboottemplate.config.AccessLoggingFilter" level="debug" additivity="false">
             <AppenderRef ref="AccessRollingFile"/>
         </Logger>
         <Root level="info" includeLocation="true">

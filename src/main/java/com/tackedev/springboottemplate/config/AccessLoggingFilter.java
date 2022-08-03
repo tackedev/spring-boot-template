@@ -20,7 +20,7 @@ import java.util.List;
 
 @Component
 @Log4j2
-public class LoggingFilter extends OncePerRequestFilter {
+public class AccessLoggingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -31,7 +31,7 @@ public class LoggingFilter extends OncePerRequestFilter {
         filterChain.doFilter(requestWrapper, responseWrapper);
         long processTime = System.currentTimeMillis() - startTime;
 
-        log.info("Request {} {} {} {} headers=[{}] parameters=[{}] body={}",
+        log.debug("Request {} {} {} {} headers=[{}] parameters=[{}] body={}",
                 requestWrapper::getRemoteAddr,
                 requestWrapper::getProtocol,
                 requestWrapper::getMethod,
@@ -39,7 +39,7 @@ public class LoggingFilter extends OncePerRequestFilter {
                 () -> getHeaderAsString(requestWrapper),
                 () -> getParametersAsString(requestWrapper),
                 () -> getBodyAsString(requestWrapper.getContentAsByteArray(), requestWrapper.getCharacterEncoding()));
-        log.info("Response processingTime={} status={} {} body={}",
+        log.debug("Response processingTime={} status={} {} body={}",
                 () -> processTime,
                 responseWrapper::getStatus,
                 () -> HttpStatus.valueOf(responseWrapper.getStatus()).getReasonPhrase(),
